@@ -25,3 +25,11 @@ func (u RSSAggUseCase) CreateUser(ctx *gin.Context, user *V1Model.UserModel) (V1
 	}
 	return obj, 200, nil
 }
+
+func (u RSSAggUseCase) GetUserByAPIKey(ctx *gin.Context, apiKey string) (V1Model.UserModel, int, error) {
+	obj, err := u.repository.GetUserByAPIKey(ctx, apiKey)
+	if err != nil {
+		return obj, 404, fmt.Errorf("no user found %v", err)
+	}
+	return obj, 200, nil
+}
