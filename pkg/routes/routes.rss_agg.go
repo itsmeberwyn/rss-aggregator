@@ -37,11 +37,8 @@ func (r *rssAggRoutes) Routes() {
 	V1Route := r.router.Group("/v1")
 	{
 		V1Route.POST("/user", r.handler.CreateUser)
-		V1Route.GET("/ping", r.middlware.MiddlewareAuth(), func(ctx *gin.Context) {
-			ctx.JSON(200, gin.H{
-				"status": true,
-				"method": "ping",
-			})
-		})
+		V1Route.GET("/user", r.middlware.MiddlewareAuth(), r.handler.GetUserByAPIKey)
+		V1Route.POST("/feed", r.middlware.MiddlewareAuth(), r.handler.CreateFeed)
+		V1Route.GET("/feeds", r.middlware.MiddlewareAuth(), r.handler.GetUserFeeds)
 	}
 }

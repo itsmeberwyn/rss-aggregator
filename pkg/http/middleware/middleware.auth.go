@@ -31,12 +31,14 @@ func (u RSSAggMiddleware) MiddlewareAuth() gin.HandlerFunc {
 			return
 		}
 
-		_, statusCode, err := u.usecase.GetUserByAPIKey(ctx, apiKey)
+		user, statusCode, err := u.usecase.GetUserByAPIKey(ctx, apiKey)
 		if err != nil {
 			handler.ErrorResponse(ctx, statusCode, err.Error())
 			ctx.Abort()
 			return
 		}
+
+		ctx.Set("userId", user.Id)
 		ctx.Next()
 	}
 }
