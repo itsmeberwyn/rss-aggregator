@@ -23,3 +23,23 @@ type FeedModel struct {
 	UserId          uuid.UUID `json:"user_id"`
 	Last_fetched_at uuid.UUID `json:"last_fetched_at"`
 }
+
+type RSSFeed struct {
+	Link   string      `xml:"link"`
+	Id     string      `xml:"id"`
+	Title  string      `xml:"title"`
+	Author []RSSAuthor `xml:"author"`
+	Entry  []RSSItem   `xml:"entry"`
+}
+
+type RSSAuthor struct {
+	Name string `xml:"name"`
+	Uri  string `xml:"uri"`
+}
+
+type RSSItem struct {
+	Id        string `xml:"id"`
+	Title     string `xml:"title"`
+	Link      string `xml:"link"`
+	Published string `xml:"published"`
+}

@@ -2,6 +2,7 @@ package v1
 
 import (
 	"fmt"
+	"net/url"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -21,6 +22,17 @@ func (h RSSAggHandler) CreateFeed(ctx *gin.Context) {
 	}
 
 	userId, err := uuid.Parse(currentUser)
+	if err != nil {
+		handler.ErrorResponse(ctx, 401, err.Error())
+		return
+	}
+
+	url, err := url.Parse(feed.Url)
+	fmt.Println(url.Hostname())
+	if url.Hostname() != "www.youtube.com" {
+		handler.ErrorResponse(ctx, 401, fmt.Sprint("invalid url (youtube links only)"))
+		return
+	}
 	if err != nil {
 		handler.ErrorResponse(ctx, 401, err.Error())
 		return

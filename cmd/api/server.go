@@ -8,10 +8,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/itsmeberwyn/rss-service/config"
 	"github.com/itsmeberwyn/rss-service/pkg/database"
+	"github.com/itsmeberwyn/rss-service/pkg/helper"
 	"github.com/itsmeberwyn/rss-service/pkg/routes"
 )
 
@@ -24,6 +26,8 @@ func NewApp() (*App, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	go helper.StartScraping(conn, 10, time.Minute)
 
 	router := NewRouter()
 	api := router.Group("api")
