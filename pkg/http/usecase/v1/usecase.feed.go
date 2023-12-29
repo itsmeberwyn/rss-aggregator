@@ -22,3 +22,19 @@ func (u RSSAggUseCase) GetUserFeeds(ctx *gin.Context, user_id string) ([]V1Model
 	}
 	return obj, 200, nil
 }
+
+func (u RSSAggUseCase) GetFeedById(ctx *gin.Context, feed_id string) (V1Model.FeedModel, int, error) {
+	obj, err := u.repository.GetFeedById(ctx, feed_id)
+	if err != nil {
+		return obj, 400, fmt.Errorf("no feed found %v", err)
+	}
+	return obj, 200, nil
+}
+
+func (u RSSAggUseCase) DeleteUserFeed(ctx *gin.Context, user_id string, feed_id string) error {
+	err := u.repository.DeleteUserFeed(ctx, user_id, feed_id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

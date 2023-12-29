@@ -47,3 +47,27 @@ func (r *RSSAggRepository) GetUserFeeds(ctx *gin.Context, user_id string) ([]V1M
 	}
 	return feeds, nil
 }
+
+func (r *RSSAggRepository) GetFeedById(ctx *gin.Context, feed_id string) (V1Model.FeedModel, error) {
+	var feedObj V1Model.FeedModel
+	err := r.conn.QueryRow(ctx,
+		`SELECT * FROM feeds
+    WHERE id=$1
+    `, feed_id).
+		Scan(&feedObj.Id, &feedObj.Created_at, &feedObj.Updated_at, &feedObj.Name, &feedObj.Url, &feedObj.UserId, &feedObj.Last_fetched_at)
+	if err != nil {
+		return feedObj, err
+	}
+	return feedObj, nil
+}
+
+func (r *RSSAggRepository) DeleteUserFeed(ctx *gin.Context, user_id string, feed_id string) error {
+	_, err := r.conn.Query(ctx,
+		`DELETE FROM feeds
+    WHERE user_id=$1 AND id=$2
+    `, user_id, feed_id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

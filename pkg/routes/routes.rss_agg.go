@@ -40,5 +40,6 @@ func (r *rssAggRoutes) Routes() {
 		V1Route.GET("/user", r.middlware.MiddlewareAuth(), r.handler.GetUserByAPIKey)
 		V1Route.POST("/feed", r.middlware.MiddlewareAuth(), r.handler.CreateFeed)
 		V1Route.GET("/feeds", r.middlware.MiddlewareAuth(), r.handler.GetUserFeeds)
+		V1Route.DELETE("/feeds/:feedId", r.middlware.MiddlewareAuth(), r.handler.DeleteUserFeed)
 	}
 }
