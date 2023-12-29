@@ -3,10 +3,10 @@ package helper
 import (
 	"context"
 	"encoding/xml"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 
@@ -35,18 +35,39 @@ func StartScraping(conn *pgxpool.Pool, concurrency int, interval time.Duration) 
 
 func scrape(conn *pgxpool.Pool, wg *sync.WaitGroup, feed V1Model.FeedModel) {
 	defer wg.Done()
+
+	err := repository.UpdateLastFetchedFeed(conn, context.Background(), feed.Id.String())
+	if err != nil {
+		log.Println("Error updating feed: ", err)
+		return
+	}
+
 	rssFeed, err := urlToFeed(feed.Url)
-	fmt.Println(feed.Url)
 	if err != nil {
 		log.Println("Error fetching feed: ", err)
 		return
 	}
 
-	// update last fetched field in feed
+	for _, item := range rssFeed.Entry {
+		published_at, err := time.Parse(time.RFC1123Z, item.Published)
+		if err != nil {
+			published_at = time.Now()
+		}
 
-	// sanitize the feed and save to post table
-
-	fmt.Println(rssFeed.Entry[0].Title)
+		post := V1Model.PostModel{
+			Title:        item.Title,
+			Published_at: published_at,
+			Url:          item.Link.Key,
+			Feed_id:      feed.Id,
+		}
+		post, err = repository.CreatePost(conn, context.Background(), post)
+		if err != nil {
+			if strings.Contains(err.Error(), "duplicate key value") {
+				continue
+			}
+			log.Println("Error creating post: ", err)
+		}
+	}
 }
 
 func urlToFeed(url string) (V1Model.RSSFeed, error) {

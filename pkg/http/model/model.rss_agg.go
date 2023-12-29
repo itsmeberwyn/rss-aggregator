@@ -21,7 +21,7 @@ type FeedModel struct {
 	Url             string    `json:"url"`
 	Name            string    `json:"name"`
 	UserId          uuid.UUID `json:"user_id"`
-	Last_fetched_at uuid.UUID `json:"last_fetched_at"`
+	Last_fetched_at time.Time `json:"last_fetched_at"`
 }
 
 type RSSFeed struct {
@@ -40,6 +40,21 @@ type RSSAuthor struct {
 type RSSItem struct {
 	Id        string `xml:"id"`
 	Title     string `xml:"title"`
-	Link      string `xml:"link"`
+	Link      Link   `xml:"link"`
 	Published string `xml:"published"`
+}
+
+type Link struct {
+	Key string `xml:"href,attr"`
+}
+
+type PostModel struct {
+	Id           uuid.UUID `json:"id"`
+	Created_at   time.Time `json:"created_at"`
+	Updated_at   time.Time `json:"updated_at"`
+	Title        string    `json:"title"`
+	Description  string    `json:"description"`
+	Url          string    `json:"url"`
+	Published_at time.Time `json:"published_at"`
+	Feed_id      uuid.UUID `json:"feed_at"`
 }
