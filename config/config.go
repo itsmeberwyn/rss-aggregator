@@ -16,10 +16,11 @@ var AppConfig appConfig
 
 // structure of the config data from .env
 type appConfig struct {
-	Port        int
-	Environment string
-	Debug       bool
-	ConnString  string
+	Port          int
+	Environment   string
+	Debug         bool
+	ConnString    string
+	DsnConnString string
 }
 
 func InitializeAppConfig() error {
@@ -39,16 +40,22 @@ func InitializeAppConfig() error {
 		return fmt.Errorf("error parsing debug value")
 	}
 
+	dsnConnString := os.Getenv("DSNCONNSTRING")
+	if dsnConnString == "" {
+		return fmt.Errorf("connection string is empty")
+	}
+
 	connString := os.Getenv("CONNSTRING")
 	if connString == "" {
 		return fmt.Errorf("connection string is empty")
 	}
 
 	AppConfig = appConfig{
-		Port:        port,
-		Environment: environment,
-		Debug:       debug,
-		ConnString:  connString,
+		Port:          port,
+		Environment:   environment,
+		Debug:         debug,
+		ConnString:    connString,
+		DsnConnString: dsnConnString,
 	}
 	return nil
 }

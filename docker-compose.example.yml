@@ -1,0 +1,24 @@
+version: "1"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - ENVIRONMENT=production
+      - DEBUG=false
+      - CONNSTRING=postgres://user:pass@host:port/dbname?sslmode=disable
+      - DSNCONNSTRING=user= password= host= port= dbname= sslmode=disable
+    depends_on:
+      - db
+
+  db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=
+      - POSTGRES_PASSWORD=
+      - POSTGRES_DB=
